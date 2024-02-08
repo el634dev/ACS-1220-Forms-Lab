@@ -32,7 +32,7 @@ class AuthorForm(FlaskForm):
             Length(min=4, max=80, message="Author's name needs to be between 4 and 80 characters")
     ])
     # - the author's biography (hint: use a TextAreaField)
-    biography = TextAreaField(u'Author Biography')
+    biography = TextAreaField('Author Biography', validators=[DataRequired()])
     # - a submit button
     submit = SubmitField('Submit')
 
@@ -46,6 +46,6 @@ class GenreForm(FlaskForm):
     """Form to create a genre."""
     # Fill out the fields in this class for:
     # - the genre's name (e.g. fiction, non-fiction, etc)
-    genres = QuerySelectMultipleField('Genres', query_name=lambda: Genre.query)
+    name = StringField('Genre Name', validators=[DataRequired()])
     # - a submit button
     submit = SubmitField('Submit')

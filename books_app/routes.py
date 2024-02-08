@@ -18,7 +18,7 @@ main = Blueprint("main", __name__)
 def homepage():
     all_books = Book.query.all()
     all_users = User.query.all()
-    return render_template('home.html', 
+    return render_template('home.html',
         all_books=all_books, all_users=all_users)
 
 @main.route('/create_book', methods=['GET', 'POST'])
@@ -58,6 +58,8 @@ def create_author():
 
     # Send the form object to the template, and use it to render the form
     # fields
+        flash('New author was created successfully.')
+        return redirect(url_for('main.homepage'))
     return render_template('create_author.html', form=form)
 
 @main.route('/create_genre', methods=['GET', 'POST'])
@@ -69,12 +71,15 @@ def create_genre():
     # redirect to the homepage
     if form.validate_on_submit():
         new_genre = Genre(
-            genres=form.genres.data
+            name=form.name.data,
         )
         db.session.add(new_genre)
         db.session.commit()
+
     # Send the form object to the template, and use it to render the form
     # fields
+        flash('New genre was created successfully.')
+        return redirect(url_for('main.homepage'))
     return render_template('create_genre.html', form=form)
 
 @main.route('/create_user', methods=['GET', 'POST'])
@@ -87,19 +92,22 @@ def book_detail(book_id):
     book = Book.query.get(book_id)
     form = BookForm(obj=book)
 
-    # If the form was submitted and is valid, update the fields in the 
-    # Book object and save to the database, then flash a success message to the 
+    # If the form was submitted and is valid, update the fields in the
+    # Book object and save to the database, then flash a success message to the
     # user and redirect to the book detail page
     if form.validate_on_submit():
         update_book = Book(
-            title=form,
-            book_id = book
+            title=form.title.data,
+            publish_date=form.publish_date.data,
+            author=form.author.data,
+            audience=form.audience.data,
+            genres=form.genres.data
         )
         db.session.add(update_book)
         db.session.commit()
 
         flash('Book details was updated successfully.')
-        return redirect(url_for('main.book_details', book_id=update_book))
+        return(redirect(url_for('main.book_detail'), book_id=book_id))
     return render_template('book_detail.html', book=book, form=form)
 
 @main.route('/profile/<username>')
