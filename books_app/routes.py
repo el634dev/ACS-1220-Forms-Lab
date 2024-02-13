@@ -107,14 +107,14 @@ def book_detail(book_id):
         db.session.commit()
 
         flash('Book details was updated successfully.')
-        return(redirect(url_for('main.book_detail'), book_id=book_id))
+        return redirect(url_for('main.book_detail', book_id=book.id))
     return render_template('book_detail.html', book=book, form=form)
 
 @main.route('/profile/<username>')
 def profile(username):
-    # TODO: Make a query for the user with the given username, and send to the
+    # Make a query for the user with the given username, and send to the
     # template
-
+    user = User.query.filter_by(username=username).first()
     # STRETCH CHALLENGE: Add ability to modify a user's username or favorite 
     # books
-    return render_template('profile.html', username=username)
+    return render_template('profile.html', user=username)
